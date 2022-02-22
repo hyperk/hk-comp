@@ -1,5 +1,6 @@
 #!/bin/env python
 
+
 from HKDIRAC.Interfaces.Utilities.BaseScript import BaseScript
 
 from tqdm import trange
@@ -9,7 +10,7 @@ import threading
 __RCSID__ = '$Id$'
 
 
-class HKDMSFindMissingFiles(BaseScript):
+class FindMissingFiles(BaseScript):
     '''
     '''
     switches = [
@@ -20,10 +21,9 @@ class HKDMSFindMissingFiles(BaseScript):
     ]
 
     def __init__(self):
-        self.lock = threading.Lock()
-        self.threads = []
-        self.not_ok_files = []
+        super().__init__()
         self.ok_files = []
+        self.not_ok_files = []
 
     def main(self):
 
@@ -32,9 +32,10 @@ class HKDMSFindMissingFiles(BaseScript):
         from DIRAC import S_OK, S_ERROR, gLogger
 
         self.dirac = Dirac()
-        import os
 
         self.nthreads = int(self.nthreads)
+        self.lock = threading.Lock()
+        self.reader = None
         if self.se is None:
             gLogger.error("No Storage Element (-S) provided: exiting")
             DIRAC_exit(1)
@@ -44,27 +45,16 @@ class HKDMSFindMissingFiles(BaseScript):
         if self.input is None:
             gLogger.error("No intput filename (-i) provided: exiting")
             DIRAC_exit(1)
-        if not self.output.endswith(".yaml"):
-            gLogger.error("Dont support file format.{}".format(self.output))
-            DIRAC_exit(1)
 
         self.extract_files()
-        self.ok_files = []
-        self.not_ok_files = []
         self.run_with_threading()
 
-        with open(self.output, "w") as text_file:
-            # print(len(self.not_ok_files))
+        with open("not_ok_"+self.output, "w") as text_file:
             for element in self.not_ok_files:
-                # print(len(a_list))
-                # for element in a_list:
                 text_file.write(element + "\n")
 
-        with open("ok_file.txt", "w") as text_file:
-            # print(len(self.ok_files))
+        with open("ok_"+self.output, "w") as text_file:
             for element in self.ok_files:
-                # print(len(a_list))
-                # for element in a_list:
                 text_file.write(element + "\n")
 
     def extract_files(self):
@@ -72,33 +62,24 @@ class HKDMSFindMissingFiles(BaseScript):
         from DIRAC.Core.Utilities.List import breakListIntoChunks
 
         file = open(self.input, 'r')
-        lines = file.readlines()
+        lines = file.read().splitlines()
         n_files = len(lines)
-        self.len_subpack = (n_files // self.nthreads + 1)
+        self.len_subpack = ( n_files // self.nthreads +1)
 
         self.subpacks = breakListIntoChunks(lines, self.len_subpack)
-        # = [ lines[self.len_subpack*i:self.len_subpack*(i+1)] for i in range(self.nthreads) ]
-        # print(len(self.subpacks))
-        # for l in self.subpacks:
-        #     print(len(l))
-        #     print(l[1])
-        # print("->", n_files)
 
     def task(self, n, list_r, ok_files, not_ok_files):
 
         from DIRAC.Core.Utilities.List import breakListIntoChunks
 
         len_chunk = 100
-        # iterator = 0
-        n_steps = len(list_r) // len_chunk + 1
-        # while iterator < len(list_r):
-        pbar = trange(n_steps)
-        pbar.set_description(f"Thread {n} -> {len(list_r)}")
-        # counter = 0
+        n_steps = len(list_r)//len_chunk + 1
+        progress_bar = trange(n_steps)
+        progress_bar.set_description(f"Thread {n} -> {len(list_r)}")
 
-        splitted_list_r = breakListIntoChunks(list_r, len_chunk)
-        for iterator in pbar:
-            result = self.dirac.getReplicas(splitted_list_r[iterator])['Value']
+        split_list_r = breakListIntoChunks(list_r, len_chunk)
+        for iterator in progress_bar:
+            result = self.dirac.getReplicas(split_list_r[iterator])['Value']
             for file, ses in iter(result["Successful"].items()):
                 found_file = False
                 for a_se in ses.keys():
@@ -112,20 +93,23 @@ class HKDMSFindMissingFiles(BaseScript):
                 not_ok_files.append(file)
 
     def run_with_threading(self):
+        self.ok_files = []
+        self.not_ok_files = []
+        self.threads =[]
         for i in trange(self.nthreads):
             name = 'thread {}'.format(i)
-            t = threading.Thread(target=self.task, args=(i, self.subpacks[i], self.ok_files, self.not_ok_files))
+            t = threading.Thread(target=self.task, args=(i, self.subpacks[i], self.ok_files, self.not_ok_files ))
             t.start()
             self.threads.append(t)
         for t in self.threads:
             t.join()
 
 
-# make it able to be run from a shell
+# function defined for setup.cfg
 def main():
-    script = HKDMSFindMissingFiles()
+    script = FindMissingFiles()
     script()
 
-
+# make it able to be run from a shell
 if __name__ == "__main__":
     main()

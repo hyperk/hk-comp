@@ -16,7 +16,7 @@ class BaseScript(object):
     #     By default, data for each flag are stored in self._<long>.replace('-','_')
     #     The value for each is set by the method self.set_<long>.replace('-','_'),
     #     a method which by default just blindly stores the value given but which
-    #     may be overridden in derrived class to have more logic.
+    #     may be overridden in derived class to have more logic.
     #     * here <long> is the long form of the flag specified in argument 1.
     #
     #     Note that in the implementation of self.main() any configured switches show
