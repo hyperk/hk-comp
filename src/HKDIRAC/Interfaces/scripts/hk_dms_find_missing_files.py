@@ -1,6 +1,5 @@
 #!/bin/env python
 
-
 from HKDIRAC.Interfaces.Utilities.BaseScript import BaseScript
 
 from tqdm import trange
@@ -14,10 +13,13 @@ class FindMissingFiles(BaseScript):
     '''
     '''
     switches = [
-        ('O:', 'output=', 'YAML file to store results in', None),
-        ('i:', 'input=', 'YAML file to read the files from', None),
-        ('j:', 'nthreads=', 'Number of threads', 5),
-        ('S:', 'se=', 'SE to check', None),
+        ('O:', 'output=', 'File to store results in', None, True),
+        ('j:', 'nthreads=', 'Number of threads', 5, False),
+        ('S:', 'se=', 'SE to check', None, True),
+    ]
+
+    arguments = [
+        ('input', 'File containing the list of LFN', True)
     ]
 
     def __init__(self):
@@ -34,18 +36,6 @@ class FindMissingFiles(BaseScript):
         self.dirac = Dirac()
 
         self.nthreads = int(self.nthreads)
-        self.lock = threading.Lock()
-        self.reader = None
-        if self.se is None:
-            gLogger.error("No Storage Element (-S) provided: exiting")
-            DIRAC_exit(1)
-        if self.output is None:
-            gLogger.error("No output filename (-O) provided: exiting")
-            DIRAC_exit(1)
-        if self.input is None:
-            gLogger.error("No intput filename (-i) provided: exiting")
-            DIRAC_exit(1)
-
         self.extract_files()
         self.run_with_threading()
 
