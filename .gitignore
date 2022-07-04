@@ -1,2 +1,5 @@
-/src/HKDirac.egg-info
+src/HKDirac.egg-info
 .idea
+build
+*.txt
+*.list
