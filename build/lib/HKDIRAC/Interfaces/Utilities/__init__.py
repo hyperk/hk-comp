@@ -1,3 +1,0 @@
-"""
-   HKDIRAC.Interfaces.Utilities package
-"""
