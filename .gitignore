@@ -3,3 +3,5 @@ src/HKDirac.egg-info
 build
 *.txt
 *.list
+*.pyc
+*.root

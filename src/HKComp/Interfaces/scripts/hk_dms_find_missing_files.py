@@ -1,6 +1,6 @@
 #!/bin/env python
 
-from HKDIRAC.Interfaces.Utilities.BaseScript import BaseScript
+from HKComp.Interfaces.Utilities.BaseScript import BaseScript
 
 from tqdm import trange
 import threading

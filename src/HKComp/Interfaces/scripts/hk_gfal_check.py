@@ -7,7 +7,7 @@ from __future__ import print_function
 
 __RCSID__ = "$Id$"
 
-from HKDIRAC.Interfaces.Utilities.BaseScript import BaseScript
+from HKComp.Interfaces.Utilities.BaseScript import BaseScript
 
 from DIRAC import gLogger
 import gfal2
