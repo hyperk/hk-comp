@@ -104,7 +104,7 @@ class BringOnlineAndReplicateScript(BaseScript):
                     ok_files.append(list_r[iterator])
                     continue
                 if self.source not in metaDatas['Value']['Successful'][list_r[iterator]].keys():
-                    gLogger.warning(f"{info_thread}SE {self.source} not valid source SE")
+                    gLogger.error(f"{info_thread}SE {self.source} not valid source SE")
                     not_ok_files.append(list_r[iterator])
                     continue
                 metaDatas = dirac.getAccessURL(list_r[iterator], self.source)
@@ -149,13 +149,13 @@ class BringOnlineAndReplicateScript(BaseScript):
                 # exit(1)
                 ok = dirac.replicateFile(list_r[iterator], self.target, self.source)
                 if not ok['OK']:
-                    gLogger.warning(f"{info_thread}Replication of {list_r[iterator]} failed")
+                    gLogger.error(f"{info_thread}Replication of {list_r[iterator]} failed")
                     not_ok_files.append(list_r[iterator])
                     continue
                 gLogger.always(f"{info_thread}Replication of {url} successful")
                 ok_files.append(list_r[iterator])
             except gfal2.GError as error:
-                gLogger.always(f"{info_thread}Replication of {url} failed because of gfal error")
+                gLogger.error(f"{info_thread}Replication of {url} failed because of gfal error")
                 not_ok_files.append(list_r[iterator])
                 continue
 
