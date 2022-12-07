@@ -11,7 +11,8 @@ class BaseScript:
     #      0 : short form (single character) command line flag
     #      1 : long form (- separated words) command line flag
     #      2 : description string shown with --help
-    #     [3]: default value to store once the item is registered
+    #      3: default value to store once the item is registered
+    #      4: is required
 
     #     By default, data for each flag are stored in self._<long>.replace('-','_')
     #     The value for each is set by the method self.set_<long>.replace('-','_'),
