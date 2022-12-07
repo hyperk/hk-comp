@@ -47,6 +47,9 @@ class FindMissingFiles(BaseScript):
             for element in self.ok_files:
                 text_file.write(element + "\n")
 
+        gLogger.always(f"Present files: {len(self.ok_files)}")
+        gLogger.always(f"Missing files: {len(self.not_ok_files)}")
+
     def extract_files(self):
 
         from DIRAC.Core.Utilities.List import breakListIntoChunks
@@ -64,12 +67,19 @@ class FindMissingFiles(BaseScript):
 
         len_chunk = 100
         n_steps = len(list_r)//len_chunk + 1
-        progress_bar = trange(n_steps)
+        progress_bar = trange(n_steps, leave=True)
         progress_bar.set_description(f"Thread {n} -> {len(list_r)}")
 
         split_list_r = breakListIntoChunks(list_r, len_chunk)
         for iterator in progress_bar:
-            result = self.dirac.getReplicas(split_list_r[iterator])['Value']
+            if iterator >= len(split_list_r):
+                continue
+            replicas_list = self.dirac.getReplicas(split_list_r[iterator])
+            if not 'Value' in replicas_list:
+                for file in split_list_r[iterator]:
+                    not_ok_files.append(file)
+                continue
+            result = replicas_list['Value']
             for file, ses in iter(result["Successful"].items()):
                 found_file = False
                 for a_se in ses.keys():
@@ -86,7 +96,7 @@ class FindMissingFiles(BaseScript):
         self.ok_files = []
         self.not_ok_files = []
         self.threads =[]
-        for i in trange(self.nthreads):
+        for i in trange(self.nthreads, leave=True):
             name = 'thread {}'.format(i)
             t = threading.Thread(target=self.task, args=(i, self.subpacks[i], self.ok_files, self.not_ok_files ))
             t.start()
