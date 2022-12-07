@@ -8,6 +8,7 @@ from __future__ import print_function
 __RCSID__ = "$Id$"
 
 from HKComp.Interfaces.Utilities.BaseScript import BaseScript
+from HKComp.Interfaces.Utilities.gfalUtils import bringOnline
 
 from DIRAC import gLogger
 import gfal2
@@ -31,8 +32,7 @@ class GFALCheckScript(BaseScript):
     switches = [
         ('O:', 'output=', 'File to store results in', None, True),
         ('j:', 'nthreads=', 'Number of threads', 5, False),
-        ('S:', 'suffix=', 'Suffix to prepend to files e.g. root://ccxroot.in2p3.fr:1097/xrootd/in2p3.fr/disk/t2k.org',
-         None, True),
+        ('S:', 'suffix=', 'Suffix to prepend to files e.g. root://ccxroot.in2p3.fr:1097/xrootd/in2p3.fr/disk/t2k.org', None, True)
     ]
 
     arguments = [
@@ -43,6 +43,9 @@ class GFALCheckScript(BaseScript):
         super().__init__()
 
     def main(self):
+
+        if self.suffix == None:
+            self.suffix = ""
 
         self.nthreads = int(self.nthreads)
         self.extract_files()
@@ -73,6 +76,11 @@ class GFALCheckScript(BaseScript):
         progress_bar.set_description(f"Thread {n} -> {len(list_r)}")
 
         for iterator in progress_bar:
+            print(f"{suffix}{list_r[iterator]}")
+            try:
+                bringOnline(context, f"{suffix}{list_r[iterator]}")
+            except gfal2.GError as error:
+                print("Cannot bring online")
             try:
                 a = context.stat(f"{suffix}{list_r[iterator]}")
                 present_files.append(list_r[iterator])
