@@ -18,11 +18,13 @@ from DIRAC import gLogger, exit as DIRAC_exit
 class SubmitRequests(BaseScript):
     '''
     '''
+    defaultSE = "CA-SFU-T21-disk"
+    # defaultSE = "UKI-LT2-QMUL2-disk,UKI-LT2-IC-HEP-disk,CA-SFU-T21-disk,RAL-LCG2-T2K-tape"
     switches = [
         ("P:", "pattern=", "Files needs to match pattern", "/", False),
         ("N:", "number=", "Number of files to process", -1, False),
         ('D:', 'subDir=', 'Only register files in the provided directory', "/", False),
-        ("S:", "sourceSE=", "Source SE", None, False),
+        ("S:", "sourceSE=", "Source SE", defaultSE, False),
         ("T:", "targetSE=", "Target SE", None, True),
         ("", "dryrun", "Run in dry-run-mode", False, False),
     ]
@@ -41,6 +43,7 @@ class SubmitRequests(BaseScript):
         gLogger.info(f"Reading {self.input}")
         file = open(self.input, 'r')
         content = file.read().splitlines()
+        self.number = int(self.number) # make sure this is an integer
         lfnList = getLFNList(content, self.subDir, self.pattern, self.number)
         lfnChunks = breakListIntoChunks(lfnList, self.sizeChunk)
         multiRequests = len(lfnChunks) > 1
@@ -50,6 +53,7 @@ class SubmitRequests(BaseScript):
         )
         if self.dryrun:
             gLogger.always("dryrun option: the requests won't be submitted for real")
+        gLogger.always(f"Using Source SE {self.sourceSE}")
 
         from DIRAC.RequestManagementSystem.Client.Request import Request
         from DIRAC.RequestManagementSystem.Client.Operation import Operation
