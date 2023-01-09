@@ -1,5 +1,9 @@
 name: Docker HK-Comp Image CI
 
+on:
+  push:
+    branches: [main]
+    tags: ['*']
     
 jobs:
 
