@@ -12,6 +12,8 @@ from HKComp.Interfaces.Utilities.BaseScript import BaseScript
 
 from DIRAC import gLogger, exit as DIRAC_exit
 
+from tqdm import trange
+
 
 class CheckRequests(BaseScript):
     '''
@@ -62,8 +64,8 @@ class CheckRequests(BaseScript):
 
         rc = ReqClient() # # create client
 
-        for requestID in self.requestsList:
-
+        for i in trange(len(self.requestsList), leave=True):
+            requestID = self.requestsList[i]
             operations = rc.peekRequest( requestID )['Value']._getJSONData()['Operations']
             for item in operations:
                 if item.Type == "RegisterReplica":
