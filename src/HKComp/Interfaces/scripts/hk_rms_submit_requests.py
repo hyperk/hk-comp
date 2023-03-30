@@ -18,8 +18,9 @@ from DIRAC import gLogger, exit as DIRAC_exit
 class SubmitRequests(BaseScript):
     '''
     '''
-    defaultSE = "CA-SFU-T21-disk"
-    # defaultSE = "UKI-LT2-QMUL2-disk,UKI-LT2-IC-HEP-disk,CA-SFU-T21-disk,RAL-LCG2-T2K-tape"
+    # defaultSE = "RAL-LCG2-T2K-tape"
+    defaultSE = "UKI-LT2-QMUL2-disk,UKI-LT2-IC-HEP-disk,CA-SFU-T21-disk,RAL-LCG2-T2K-tape"
+    # defaultSE = "UKI-LT2-QMUL2-disk,UKI-LT2-IC-HEP-disk,CA-SFU-T21-disk"
     switches = [
         ("P:", "pattern=", "Files needs to match pattern", "/", False),
         ("N:", "number=", "Number of files to process", -1, False),
