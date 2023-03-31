@@ -2,7 +2,7 @@
 
 ## Standard Procedures
 
-## Setup DIRAC proxy
+### Setup DIRAC proxy
 
 ````bash
 dirac-proxy-init -g t2k.org_user -M -U -v 72:00
