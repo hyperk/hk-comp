@@ -36,7 +36,7 @@ before_script:
 
 build:
   tags:
-    - python
+    - python3
   script:
     - pip install .
     # run the command here
