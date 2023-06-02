@@ -24,8 +24,8 @@ cache:
 
 before_script:
   - apt-get update
-  - apt-get install -y swig3.0
-  - ln -s /usr/bin/swig3.0 /usr/bin/swig
+  - apt-get install -y swig4.0
+  - ln -s /usr/bin/swig4.0 /usr/bin/swig
   - python --version ; pip --version  # For debugging
   - pip install virtualenv
   - virtualenv venv
