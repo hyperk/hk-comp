@@ -23,6 +23,7 @@ cache:
     - venv/
 
 before_script:
+  - apt-get update
   - apt-get install -y swig3.0
   - ln -s /usr/bin/swig3.0 /usr/bin/swig
   - python --version ; pip --version  # For debugging
