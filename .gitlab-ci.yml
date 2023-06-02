@@ -1,99 +1,62 @@
-# This file is a template, and might need editing before it works on your project.
-# Using job token: https://docs.gitlab.com/ee/user/project/new_ci_build_permissions_model.html#job-token
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Python.gitlab-ci.yml
 
-########################@
+# Official language image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/python/tags/
+#image: python:latest
 
-image: docker:latest
-services:
-- docker:dind
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
-stages:
-  - build
-  - test
-  - release
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/topics/caching/
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+tags:
+  - python
 
 before_script:
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  - python --version ; pip --version  # For debugging
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
+#test:
+#  script:
+#    - pip install ruff tox  # you can also use tox
+#    - pip install --editable ".[test]"
+#    - tox -e py,ruff
 
-code_quality:
-  rules:
-    - if: '$CODE_QUALITY_DISABLED'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run code quality job in merge request pipelines
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'      # Run code quality job in pipelines on the master branch (but not in other branch pipelines)
-    - if: '$CI_COMMIT_TAG' 
+run:
+  script:
+    - pip install .
+    # run the command here
   artifacts:
-    paths: [gl-code-quality-report.json]
-  stage: test
+    paths:
+      - build/*
 
-# Build the master branch when there is no tag
-build-master:
-  stage: build
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-  only:
-    - master
-# Additional build when a tag is made
-build-tags:
-  stage: build
-  script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-  only:
-    - tags
+#pages:
+#  script:
+#    - pip install sphinx sphinx-rtd-theme
+#    - cd doc
+#    - make html
+#    - mv build/html/ ../public/
+#  artifacts:
+#    paths:
+#      - public
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-# Steps for the merge request
-build-mr:
-  stage: build
-  script:
-    - docker build --pull  -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-  only:
-    - merge_requests
-
-test:
-  stage: test
-  script:
-    - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-    - docker run "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" bash -c 'source $COMMON_BUILD_PREFIX/setup.sh && source ../bin/setup.sh && nd280-validate --apply'
-  only:
-    - merge_requests
-    - master
-    - tags
-
-documentation:
-  stage: test
-  script:
-    - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-    - docker run "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" bash -c 'source $COMMON_BUILD_PREFIX/setup.sh && source ../bin/setup.sh && make hatRecon_documentation'
-  only:
-    - merge_requests
-    - master
-    - tags
-
-release-master:
-  stage: release
-  script:
-    - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-    - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" "$CI_REGISTRY_IMAGE:latest"
-    - docker push "$CI_REGISTRY_IMAGE:latest"
-  only:
-    - master
-
-release-tags:
-  stage: release
-  script:
-    - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-    - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
-  only:
-    - tags
-
-variables:
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
-  #DOCKER_HOST: tcp://docker:2375
+#deploy:
+#  stage: deploy
+#  script: echo "Define your deployment script!"
+#  environment: production
