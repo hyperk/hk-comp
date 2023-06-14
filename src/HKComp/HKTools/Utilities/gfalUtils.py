@@ -1,8 +1,6 @@
-
-import gfal2
 import errno
 import time
-from DIRAC import S_OK, S_ERROR, gLogger
+from DIRAC import gLogger
 
 def bringOnline(context, url, info_thread=""):
     surl = [url]  # here we could use a list with several elements instead of one element

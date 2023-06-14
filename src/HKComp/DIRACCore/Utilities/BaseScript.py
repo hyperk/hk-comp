@@ -4,6 +4,7 @@
 
 from DIRAC import S_OK, S_ERROR, gLogger, exit as DIRAC_Exit
 from DIRAC.Core.Base import Script
+from DIRAC.Core.Base.Script import Script as ScriptI
 
 
 class BaseScript:
@@ -63,9 +64,9 @@ class BaseScript:
 
     def registerArgument(self, arg):
         if len(arg) == 3:
-            Script.registerArgument(str(arg[0]) + "\t" + str(arg[1]), arg[2])
+            Script.registerArgument((arg[0] + ": " + arg[1]), mandatory=arg[2])
         else:
-            Script.registerArgument(str(arg[0]) + "\t" + str(arg[1]), False)
+            Script.registerArgument((arg[0] + ": " + arg[1]), mandatory=False)
 
     def getPositionalArgs(self):
         values = Script.getPositionalArgs()
@@ -104,7 +105,7 @@ class BaseScript:
         for switch in self.switches:
             this_name = switch[1].replace('-', '_').rstrip(':=')
             if getattr(self, this_name) == None and switch[4] == True:
-                gLogger.error(f'Missing argument for {this_name}')
-                Script.showHelp(exitCode=1)
+                gLogger.error(f'Missing argument or option: {this_name} ({switch[2]})')
+                ScriptI().showHelp(exitCode=1)
                 DIRAC_Exit(1)
 

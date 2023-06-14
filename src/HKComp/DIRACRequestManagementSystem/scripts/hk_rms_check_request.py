@@ -8,9 +8,9 @@ from __future__ import print_function
 
 __RCSID__ = "$Id$"
 
-from HKComp.Interfaces.Utilities.BaseScript import BaseScript
+from HKComp.DIRACCore.Utilities.BaseScript import BaseScript
 
-from DIRAC import gLogger, exit as DIRAC_exit
+from DIRAC import gLogger
 
 from tqdm import trange
 
@@ -43,12 +43,6 @@ class CheckRequests(BaseScript):
             self.requestsList = [self.requestName]
 
         gLogger.always(f"Getting status of {len(self.requestsList)} request(s): {self.requestsList}")
-
-        from DIRAC.RequestManagementSystem.Client.Request import Request
-        from DIRAC.RequestManagementSystem.Client.Operation import Operation
-        from DIRAC.RequestManagementSystem.Client.File import File
-        from DIRAC.RequestManagementSystem.Client.ReqClient import ReqClient
-        from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
 
         from DIRAC.RequestManagementSystem.Client.ReqClient import ReqClient
 

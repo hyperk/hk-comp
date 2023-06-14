@@ -1,3 +1,0 @@
-"""
-   HKComp.Interfaces.Utilities package
-"""

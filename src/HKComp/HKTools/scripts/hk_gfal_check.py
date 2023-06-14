@@ -7,10 +7,9 @@ from __future__ import print_function
 
 __RCSID__ = "$Id$"
 
-from HKComp.Interfaces.Utilities.BaseScript import BaseScript
-from HKComp.Interfaces.Utilities.gfalUtils import bringOnline
+from HKComp.DIRACCore.Utilities.BaseScript import BaseScript
+from HKComp.HKTools.Utilities.gfalUtils import bringOnline
 
-from DIRAC import gLogger
 import gfal2
 
 from tqdm import trange

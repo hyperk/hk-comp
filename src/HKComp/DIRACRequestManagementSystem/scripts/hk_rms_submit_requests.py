@@ -8,8 +8,8 @@ from __future__ import print_function
 
 __RCSID__ = "$Id$"
 
-from HKComp.Interfaces.Utilities.BaseScript import BaseScript
-from HKComp.Interfaces.Utilities.LFNLists import getLFNList
+from HKComp.DIRACCore.Utilities.BaseScript import BaseScript
+from HKComp.HKTools.Utilities.LFNLists import getLFNList
 from DIRAC.Core.Utilities.List import breakListIntoChunks
 
 from DIRAC import gLogger, exit as DIRAC_exit

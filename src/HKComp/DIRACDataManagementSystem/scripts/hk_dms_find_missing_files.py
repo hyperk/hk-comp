@@ -1,6 +1,6 @@
 #!/bin/env python
 
-from HKComp.Interfaces.Utilities.BaseScript import BaseScript
+from HKComp.DIRACCore.Utilities.BaseScript import BaseScript
 
 from tqdm import trange
 import threading
@@ -29,9 +29,8 @@ class FindMissingFiles(BaseScript):
 
     def main(self):
 
-        from DIRAC import gLogger, exit as DIRAC_exit
         from DIRAC.Interfaces.API.Dirac import Dirac
-        from DIRAC import S_OK, S_ERROR, gLogger
+        from DIRAC import gLogger
 
         self.dirac = Dirac()
 

@@ -3,7 +3,7 @@
 A utility to display the ancestors of an LFN
 """
 
-from HKComp.Interfaces.Utilities.BaseScript import BaseScript
+from HKComp.DIRACCore.Utilities.BaseScript import BaseScript
 
 from DIRAC import gLogger
 from DIRAC.Resources.Catalog.FileCatalogClient import FileCatalogClient

@@ -1,13 +1,12 @@
 #!/bin/env python
 
-from HKComp.Interfaces.Utilities.BaseScript import BaseScript
+from HKComp.DIRACCore.Utilities.BaseScript import BaseScript
 from DIRAC.Core.Utilities.List import breakListIntoChunks
 
-from DIRAC import gLogger, exit as DIRAC_exit
+from DIRAC import gLogger
 
 from tqdm import trange
 import threading
-import gfal2
 
 # dirac requires that we set this
 __RCSID__ = '$Id$'
@@ -36,7 +35,6 @@ class FindReplicasScript(BaseScript):
     def main(self):
 
         from DIRAC.Interfaces.API.Dirac import Dirac
-        from DIRAC import S_OK, S_ERROR, gLogger
 
         self.dirac = Dirac()
 

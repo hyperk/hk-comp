@@ -2,6 +2,8 @@
 
 ## Standard Procedures
 
+## Setup DIRACOS
+
 ## Setup DIRAC proxy
 
 ````bash

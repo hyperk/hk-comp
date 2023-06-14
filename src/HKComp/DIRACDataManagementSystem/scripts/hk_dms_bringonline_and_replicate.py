@@ -1,7 +1,7 @@
 #!/bin/env python
 
-from HKComp.Interfaces.Utilities.BaseScript import BaseScript
-from HKComp.Interfaces.Utilities.gfalUtils import bringOnline
+from HKComp.DIRACCore.Utilities.BaseScript import BaseScript
+from HKComp.HKTools.Utilities.gfalUtils import bringOnline
 
 from tqdm import trange
 import threading
@@ -38,9 +38,8 @@ class BringOnlineAndReplicateScript(BaseScript):
 
     def main(self):
 
-        from DIRAC import gLogger, exit as DIRAC_exit
         from DIRAC.Interfaces.API.Dirac import Dirac
-        from DIRAC import S_OK, S_ERROR, gLogger
+        from DIRAC import gLogger
 
         self.dirac = Dirac()
 
@@ -76,10 +75,7 @@ class BringOnlineAndReplicateScript(BaseScript):
 
         from DIRAC.Resources.Catalog.FileCatalog import FileCatalog
         from DIRAC.Interfaces.API.Dirac import Dirac
-        from DIRAC import S_OK, S_ERROR, gLogger
-        import errno
-        import time
-
+        from DIRAC import gLogger
 
         context = gfal2.creat_context()
         fc = FileCatalog()

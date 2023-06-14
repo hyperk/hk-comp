@@ -8,8 +8,8 @@ from __future__ import print_function
 
 __RCSID__ = "$Id$"
 
-from HKComp.Interfaces.Utilities.BaseScript import BaseScript
-from HKComp.Interfaces.Utilities.LFNLists import getLFNList
+from HKComp.DIRACCore.Utilities.BaseScript import BaseScript
+from HKComp.HKTools.Utilities.LFNLists import getLFNList
 from DIRAC.Core.Utilities.List import breakListIntoChunks
 from DIRAC.RequestManagementSystem.Client.Request import Request
 from DIRAC.RequestManagementSystem.Client.Operation import Operation
@@ -26,12 +26,15 @@ class SubmitSplitRequests(BaseScript):
     '''
     # defaultSE = "RAL-LCG2-T2K-tape"
     # defaultSE = "UKI-LT2-QMUL2-disk,UKI-LT2-IC-HEP-disk,CA-SFU-T21-disk"
-    defaultSE = "CA-SFU-T21-disk,RAL-LCG2-T2K-tape,UKI-LT2-IC-HEP-disk,UKI-LT2-QMUL2-disk"
+    defaultSE = "CA-SFU-T21-disk,RAL-LCG2-T2K-tape,UKI-LT2-IC-HEP-disk,IN2P3-CC-XRD-disk,IN2P3-CC-XRD-tape" #,UKI-LT2-QMUL2-disk" QMUL doesn't work
 
     targetSEDict = OrderedDict()
-    targetSEDict["IN2P3-CC-XRD-disk"] = ["cata", "anal"]
-    targetSEDict["None"] = ["log", "logf"]
-    targetSEDict["IN2P3-CC-XRD-tape"] = ["t2k.org"] # basically everything else should go to tape
+    targetSEDict["IN2P3-CC-XRD-disk"] = ["t2k.org"] # basically everything else should go to tape
+    #
+    # targetSEDict = OrderedDict()
+    # targetSEDict["IN2P3-CC-XRD-disk"] = ["cata", "anal", "numc"]
+    # targetSEDict["None"] = ["log", "logf"]
+    # targetSEDict["IN2P3-CC-XRD-tape"] = ["t2k.org"] # basically everything else should go to tape
 
     switches = [
         ("P:", "pattern=", "Files needs to match pattern", "/", False),
@@ -90,6 +93,7 @@ class SubmitSplitRequests(BaseScript):
                 gLogger.error("Error while getting the replicas")
                 continue
             print(f'Length found replicas: {len(replicas["Value"]["Successful"])}')
+            # this paragraph is to check whether each file is available in one of the allowed source SE
             for a_file, subdict in replicas["Value"]["Successful"].items():
                 common_SE = set(self.list_sourceSE).intersection(subdict.keys())
                 if len(common_SE) == 0:
