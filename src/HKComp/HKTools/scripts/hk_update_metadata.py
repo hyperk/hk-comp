@@ -67,7 +67,7 @@ class UpdateMetadata(BaseScript):
                 gLogger.always("Not running the command")
             else:
                 gLogger.info("Running the command")
-                # res = fcc.addMetadataField(key, value['type'], '-f')
+                # res = fcc.addMetadataField(key, value['type'], '-f') # TODO uncomment me
             if res["OK"]:
                 gLogger.info(f"Done!")
             else:
