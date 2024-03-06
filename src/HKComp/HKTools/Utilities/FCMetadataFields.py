@@ -22,7 +22,36 @@ t2k_metadata_fields = {
     },
     "data_level": {
         "type": "VARCHAR(24)",
-        "values": ["raw", "preproc", "calib", "reco", "cata"],
+        "values": ["raw", "preproc", "calib", "reco", "cata", "log"],
+    },
+    "run_id": {
+        "type": "UINT",
+    },
+    "geometry_id": {
+        "type": "VARCHAR(24)",
+    },
+}
+hk_metadata_fields = {
+    "type": {
+        "type": "VARCHAR(24)",
+        "values": ["mc", "data", "param"],
+    },
+    "detector": {
+        "type": "VARCHAR(24)",
+        "values": ["nd280", "iwcd", "hk"],
+    },
+    "nd280_version": {
+        "type": "VARCHAR(24)",
+    },
+    "prod_version": {
+        "type": "VARCHAR(24)",
+    },
+    "package_config_version": {
+        "type": "VARCHAR(24)",
+    },
+    "data_level": {
+        "type": "VARCHAR(24)",
+        "values": ["raw", "preproc", "calib", "reco", "cata", "log"],
     },
     "run_id": {
         "type": "UINT",
