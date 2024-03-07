@@ -25,7 +25,7 @@ t2k_metadata_fields = {
         "values": ["raw", "preproc", "calib", "reco", "cata", "log"],
     },
     "run_id": {
-        "type": "UINT",
+        "type": "INT UNSIGNED",
     },
     "geometry_id": {
         "type": "VARCHAR(24)",
@@ -54,7 +54,7 @@ hk_metadata_fields = {
         "values": ["raw", "preproc", "calib", "reco", "cata", "log"],
     },
     "run_id": {
-        "type": "UINT",
+        "type": "INT UNSIGNED",
     },
     "geometry_id": {
         "type": "VARCHAR(24)",
@@ -74,7 +74,6 @@ def getFCMetadataFields(VO: str):
 
     # Only handles T2K (for now)
     if VO == "hk":
-        gLogger.fatal(f"Cannot handle VO hk (for now); only t2k (sorry!)")
-        DIRAC_Exit(1)
+        return hk_metadata_fields
     elif VO == "t2k":
         return t2k_metadata_fields
