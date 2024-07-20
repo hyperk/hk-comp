@@ -61,7 +61,7 @@ hk_metadata_fields = {
     },
 }
 
-def getFCMetadataFields(VO: str):
+def getFCMetadataFields(VO: str) -> dict:
     """
     This returns the proper dictionary of metadata based on the VO
     :param VO: VO to use (t2k, hk, ...)
@@ -77,3 +77,43 @@ def getFCMetadataFields(VO: str):
         return hk_metadata_fields
     elif VO == "t2k":
         return t2k_metadata_fields
+
+
+def create_empty_metadata_dict(VO: str) -> dict:
+    """
+    Create an empty metadata dictionary that will be filled later.
+    Typically, we list all the required metadata fields and then manually/semi-automatically set them as part of a job.
+    :param VO: str (t2k or hk)
+    :return: dict with all the required metadata fields but with empty values
+    """
+    template_dict = getFCMetadataFields(VO)
+    return dict.fromkeys(template_dict.keys())
+
+def validate_metadata_fields(VO: str, metadata_dict: dict) -> bool:
+    """
+    Check the validity of metadata fields in the dictionary.
+    Based on the VO, the following return values are:
+    - False if :
+       - the value in a metadata field is not part of list of possible metadata fields
+    - True otherwise
+    Warnings are printed if:
+    - a metadata field is missing (acceptable in the case where the user is updating some metadata fields)
+    - a metadata field is empty (there are fields that could be not applicable based on other metadata values; in that
+      case, better to remove them from the dictionary?)
+    :param VO: str (t2k or hk)
+    :param metadata_dict: dict with the metadata fields to validate
+    :return: bool
+    """
+
+    template = getFCMetadataFields(VO)
+
+    for key, value in metadata_dict.items():
+        if key not in template:
+            gLogger.warn(f"Metadata field <{key}> is missing!")
+            continue
+        if value is None:
+            gLogger.warn(f"Metadata field <{key}> is empty!")
+        if "values" in template[key] and value not in template[key]["values"]:
+            gLogger.error(f"Metadata field <{key}> is invalid: must be within {template[key]["values"]}!")
+            return False
+    return True
