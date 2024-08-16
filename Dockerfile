@@ -1,4 +1,4 @@
-FROM ghcr.io/hyperk/dependencies2:latest
+FROM registry.git.hyperk.org/hyperk/hk-containers/dependencies2:latest
 
 RUN curl -LO https://github.com/DIRACGrid/DIRACOS2/releases/latest/download/DIRACOS-Linux-$(uname -m).sh &&\
     bash DIRACOS-Linux-$(uname -m).sh &&\
