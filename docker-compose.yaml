@@ -1,0 +1,13 @@
+services:
+  dirac-container:
+    build:
+        context: .
+        dockerfile: Dockerfile
+
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    volumes:
+      - $HOME/.globus:/root/.globus
+      - $HOME:/host
+    entrypoint:
+      - ./docker-entrypoint.sh

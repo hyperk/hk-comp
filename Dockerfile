@@ -14,3 +14,5 @@ COPY setup.py .
 
 RUN source /usr/local/hk/diracos/diracosrc &&\
     pip install .
+
+COPY docker-entrypoint.sh .
