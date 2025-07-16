@@ -1,5 +1,26 @@
 # HKDirac
 
+## Use docker container
+
+For convenience and avoiding general headaches, `docker compose` can be used to have a working system very easily.
+To start this, you would need to have `docker` and `docker compose` installed (you could also use singularity, but it hasn't)
+been tested).
+Then run in this `hk-comp` directory:
+
+```bash
+docker compose run --build dirac-container
+```
+
+This will first build the docker image, create a container with this image and finally mount your certificates under 
+`/root/.globus` and your home directory under `/host` (you can change this mounting policy by editing the `docker-compose.yaml`
+file).
+During this process, you will be asked for your certificates password twice (one for the initial initialisation of the proxy
+and one for the hyper.org_user proxy creation).
+You can change the group to join (e.g. `hyperk.org_user` or `hyperk.org_prod`) by editing the `docker-entrypoint.sh` file.
+
+After this procedure, you should see a change in your shell prompt: you should then have access to the dirac command 
+along with the `hk-XXX` ones that are defined in this `hk-comp` repository (see below).
+
 ## Standard Procedures
 
 ## Setup DIRACOS
